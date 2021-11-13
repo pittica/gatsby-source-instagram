@@ -1,0 +1,58 @@
+{
+  "name": "@pittica/gatsby-source-instagram",
+  "private": false,
+  "description": "Instagram source for GatsbyJS.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Lucio Benini",
+    "email": "info@pittica.com",
+    "url": "https://pittica.com"
+  },
+  "bugs": {
+    "url": "https://github.com/pittica/gatsby-source-instagram/issues"
+  },
+  "deprecated": false,
+  "homepage": "https://github.com/pittica/gatsby-source-instagram",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source",
+    "instagram"
+  ],
+  "dependencies": {
+    "axios": "^0.24.0",
+    "gatsby-source-filesystem": "^3.14.0",
+    "moment": "^2.29.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "babel-preset-gatsby-package": "^2.0.0",
+    "cpx": "^1.5.0",
+    "react-scripts": "^4.0.3"
+  },
+  "peerDependencies": {
+    "gatsby": "^3.0.0 || ^4.0.0",
+    "prettier": "^2.4.1"
+  },
+  "main": "dist",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pittica/gatsby-source-instagram.git"
+  },
+  "config": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "react-scripts test",
+    "build": "rimraf ./dist && mkdirp ./dist && babel src --out-dir dist --copy-files && cpx {package.json,README.md,LICENSE} ./dist"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "babel": {
+    "presets": [
+      "babel-preset-gatsby-package"
+    ]
+  }
+}
