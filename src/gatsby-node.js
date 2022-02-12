@@ -11,12 +11,13 @@ export function pluginOptionsSchema({ Joi }) {
       .default(5)
       .description(`Entries limit.`),
     locale: Joi.string().default("en").description(`Locale.`),
+    type: Joi.string().default("Instagram").description(`Node type name.`),
   })
 }
 
 export async function sourceNodes(
   { actions: { createNode }, createNodeId, reporter, createContentDigest },
-  { token, limit }
+  { token, limit, type }
 ) {
   const data = await axios
     .get(`https://graph.instagram.com/me/media`, {
@@ -51,7 +52,7 @@ export async function sourceNodes(
         thumbnail_url,
       }) => {
         createNode({
-          id: `Instagram:${createNodeId(`${id}`)}`,
+          id: `${type}:${createNodeId(`${id}`)}`,
           timestamp,
           url: media_url,
           permalink,
@@ -59,9 +60,9 @@ export async function sourceNodes(
           username,
           mediaType: media_type,
           thumbnailUrl: thumbnail_url,
-          remoteTypeName: "Instgram",
+          remoteTypeName: type,
           internal: {
-            type: `Instagram`,
+            type,
             content: caption,
             contentDigest: createContentDigest(caption || ""),
           },
@@ -71,15 +72,18 @@ export async function sourceNodes(
   }
 }
 
-export async function onCreateNode({
-  node,
-  actions: { createNode },
-  createNodeId,
-  getCache,
-  cache,
-  reporter,
-}) {
-  if (node.remoteTypeName === "Instgram") {
+export async function onCreateNode(
+  {
+    node,
+    actions: { createNode, createNodeField },
+    createNodeId,
+    getCache,
+    cache,
+    reporter,
+  },
+  { type }
+) {
+  if (node.remoteTypeName === type) {
     const url = node.thumbnailUrl || node.url
 
     if (url) {
@@ -94,7 +98,7 @@ export async function onCreateNode({
         })
 
         if (fileNode) {
-          node.localFile = fileNode.id
+          createNodeField({ node, name: "localFile", value: fileNode.id })
         }
       } catch (error) {
         reporter.panic({
@@ -107,9 +111,12 @@ export async function onCreateNode({
   }
 }
 
-export function createSchemaCustomization({ actions: { createTypes } }) {
+export function createSchemaCustomization(
+  { actions: { createTypes } },
+  { type }
+) {
   createTypes(`
-    type Instagram implements Node {
+    type ${type} implements Node {
       id: String!
       timestamp: Date @dateformat
       url: String!
@@ -118,14 +125,14 @@ export function createSchemaCustomization({ actions: { createTypes } }) {
       username: String!
       thumbnailUrl: String
       mediaType: String!
-      localFile: File @link
+      localFile: File @link(from: "fields.localFile")
     }
   `)
 }
 
-export function createResolvers({ createResolvers }, { locale }) {
+export function createResolvers({ createResolvers }, { locale, type }) {
   const resolvers = {
-    Instagram: {
+    [type]: {
       formattedDate: {
         type: "String",
         resolve: ({ timestamp }) => {
