@@ -2,7 +2,7 @@
   "name": "@pittica/gatsby-source-instagram",
   "private": false,
   "description": "Instagram source for GatsbyJS.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": {
     "name": "Lucio Benini",
     "email": "info@pittica.com",
@@ -34,7 +34,6 @@
     "gatsby": "^4.7.0",
     "prettier": "^2.5.1"
   },
-  "main": "dist",
   "license": "MIT",
   "repository": {
     "type": "git",

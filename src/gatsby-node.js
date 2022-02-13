@@ -28,10 +28,8 @@ export async function sourceNodes(
         access_token: token,
       },
     })
-    .then(({ data: { data } }) => {
-      return data
-    })
-    .catch(function (error) {
+    .then(({ data: { data } }) => data)
+    .catch((error) => {
       reporter.panic({
         context: {
           sourceMessage: `Instagram: ${error.message}`,
